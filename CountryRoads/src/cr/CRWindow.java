@@ -1,6 +1,7 @@
 package cr;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,14 +23,18 @@ public class CRWindow extends JFrame {
 	 */
 	public static void main(String[] args) {
 		try {
+			PictureWindow pics = new PictureWindow();
 			CRWindow frame = new CRWindow();
 			frame.setVisible(true);
 			
 			frame.playMusic();
 			frame.addLyrics("Almost heaven, ", 6500);
 			frame.addLyrics("West Virigina", 3500);
-			frame.addLyrics("\n Blue Ridge Mountain, ", 3500);
-			frame.addLyrics("Shanandoa River,", 3500);
+			
+			frame.addLyrics("\nBlue Ridge Mountains, ", 3400);
+			pics.addImg("mountain.jpg", "Blue Ridge Mountains");
+			frame.addLyrics("Shanandoah River,", 2500);
+			pics.addImg("river.jpg", "Shenandoah River");
 
 		} catch (Exception e) {
 			e.printStackTrace();
