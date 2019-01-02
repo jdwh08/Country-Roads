@@ -2,8 +2,10 @@ package hw;
 
 import java.util.concurrent.TimeUnit;
 
+
 public class HelloWorld {
 	public static void main(String[] args) {
+		
 		String[] westVirginia = {"Almost heaven, ", "West Virginia,", 
 				"Blue Ridge Mountain, ", "Shenandoah River",
 				"Life is old there, ", "older than the trees,",
@@ -18,7 +20,7 @@ public class HelloWorld {
 			System.out.println(westVirginia[i]);
 			
 			try {
-				TimeUnit.SECONDS.sleep(1);
+				TimeUnit.SECONDS.sleep(2);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
