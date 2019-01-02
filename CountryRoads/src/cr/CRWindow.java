@@ -1,29 +1,39 @@
 package cr;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.io.*;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 
 public class CRWindow extends JFrame {
 
 	private JPanel contentPane;
-	private JScrollPane scrollPane;
+	private static JTabbedPane tabbedPane;
+	private static JScrollPane scrollPane;
 	private static JTextArea textArea;
+	private JLayeredPane layeredPane;
+	
+	private static int xSize;
+	private static int ySize;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		xSize = screenSize.width;
+		ySize = screenSize.height;
+		
 		try {
-			PictureWindow pics = new PictureWindow();
 			CRWindow frame = new CRWindow();
 			frame.setVisible(true);
 			
@@ -32,9 +42,9 @@ public class CRWindow extends JFrame {
 			frame.addLyrics("West Virigina", 3500);
 			
 			frame.addLyrics("\nBlue Ridge Mountains, ", 3400);
-			pics.addImg("mountain.jpg", "Blue Ridge Mountains");
-			frame.addLyrics("Shanandoah River,", 2500);
-			pics.addImg("river.jpg", "Shenandoah River");
+			frame.addImg("mountain.jpg", "Blue Ridge Mountains");
+			frame.addLyrics("Shenandoah River,", 2500);
+			frame.addImg("river.jpg", "Shenandoah River");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -47,17 +57,31 @@ public class CRWindow extends JFrame {
 	public CRWindow() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Country Roads");
-		setBounds(100, 100, 450, 300);
+		this.setSize(xSize, ySize);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
+		layeredPane = new JLayeredPane();
+		contentPane.add(layeredPane, BorderLayout.NORTH);
+		
 		scrollPane = new JScrollPane();
-		contentPane.add(scrollPane, BorderLayout.CENTER);
+		scrollPane.setBounds(5, 5, xSize/5, ySize - 5);
+		layeredPane.add(scrollPane);
 		
 		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
+		textArea.setBounds(5, 5, xSize/5, ySize - 5);
+		scrollPane.add(textArea);
+		
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(5, 5, xSize - 5, ySize - 5);
+		layeredPane.add(tabbedPane);
+		
+		contentPane.setComponentZOrder(textArea, 0);
+		contentPane.setComponentZOrder(scrollPane, 1);
+		contentPane.setComponentZOrder(tabbedPane, 2);
+		contentPane.setComponentZOrder(layeredPane, 3);
 	}
 	
 	/**
@@ -93,9 +117,6 @@ public class CRWindow extends JFrame {
 		
 		currentLyrics += lyr;
 		
-		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
-		
 		textArea.setText(currentLyrics);
 	}
 	
@@ -107,8 +128,21 @@ public class CRWindow extends JFrame {
 		TimeUnit.MILLISECONDS.sleep(mstime);
 		
 		textArea = new JTextArea();
-		scrollPane.setViewportView(textArea);
-		
+		scrollPane.add(textArea);
 		textArea.setText(lyr);
+	}
+	
+	public void addImg(String path, String tabTitle) {
+		JPanel newImg = new JPanel();
+		try {
+			BufferedImage myPicture = ImageIO.read(new File(path));
+			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+			newImg.add(picLabel);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		tabbedPane.addTab(tabTitle, null, newImg, null);		
+		tabbedPane.setSelectedIndex(tabbedPane.indexOfTab(tabTitle));
 	}
 }
